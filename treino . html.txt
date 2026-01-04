@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treino 50min</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; background: #f5f5f5; padding: 20px; }
+  h1 { color: #333; }
+  #exercise { font-size: 1.5em; margin: 20px 0; }
+  #timer { font-size: 2em; margin: 20px 0; }
+  button { padding: 10px 20px; font-size: 1em; margin: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>Treino 50min</h1>
+<p>Escolha o dia:</p>
+<button onclick="startWorkout('segunda')">Segunda - Puxada/Core</button>
+<button onclick="startWorkout('terca')">Terça - Ombros/Handstand</button>
+<button onclick="startWorkout('quinta')">Quinta - Corpo/Explosão</button>
+
+<div id="exercise"></div>
+<div id="timer">00:00</div>
+<button onclick="pauseTimer()">Pausar</button>
+<button onclick="resetTimer()">Reiniciar</button>
+
+<script>
+let workout = [];
+let currentStep = 0;
+let timeLeft = 0;
+let timerInterval = null;
+
+const workoutsData = {
+  segunda: [
+    {name: 'Aquecimento 0-5 min', duration: 5},
+    {name: 'Hollow body + Superman 5-7 min', duration: 2},
+    {name: 'Pull-ups c/ pausa topo 7-15 min', duration: 8},
+    {name: 'Muscle-ups técnicos 15-22 min', duration: 7},
+    {name: 'Bar dips 22-28 min', duration: 6},
+    {name: 'Australian pull-ups 28-33 min', duration: 5},
+    {name: 'Leg raises suspenso 33-40 min', duration: 7},
+    {name: 'Prancha frontal/lateral 40-48 min', duration: 8},
+    {name: 'Alongamento 48-50 min', duration: 2},
+  ],
+  terca: [
+    {name: 'Aquecimento 0-5 min', duration: 5},
+    {name: 'Hollow rocks 5-7 min', duration: 2},
+    {name: 'Pike push-ups 7-15 min', duration: 8},
+    {name: 'Handstand hold 15-22 min', duration: 7},
+    {name: 'Dips paralelas 22-28 min', duration: 6},
+    {name: 'Push-ups pés elevados 28-33 min', duration: 5},
+    {name: 'Face pulls 33-38 min', duration: 5},
+    {name: 'Hollow + Superman 38-48 min', duration: 10},
+    {name: 'Alongamento 48-50 min', duration: 2},
+  ],
+  quinta: [
+    {name: 'Aquecimento 0-5 min', duration: 5},
+    {name: 'Hollow rocks 5-7 min', duration: 2},
+    {name: 'Muscle-ups explosivos 7-14 min', duration: 7},
+    {name: 'Handstand push-ups assistidas 14-21 min', duration: 7},
+    {name: 'Pull-ups com peso 21-28 min', duration: 7},
+    {name: 'Dips c/ pausa 28-33 min', duration: 5},
+    {name: 'Leg raises / Toes to bar 33-38 min', duration: 5},
+    {name: 'Burpees/explosive push-ups 38-46 min', duration: 8},
+    {name: 'Prancha + alongamento 46-50 min', duration: 4},
+  ]
+};
+
+function startWorkout(day) {
+  workout = workoutsData[day];
+  currentStep = 0;
+  startStep();
+}
+
+function startStep() {
+  if(currentStep >= workout.length) {
+    document.getElementById('exercise').innerText = "Treino concluído!";
+    clearInterval(timerInterval);
+    return;
+  }
+  timeLeft = workout[currentStep].duration * 60;
+  document.getElementById('exercise').innerText = workout[currentStep].name;
+  updateTimer();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(countdown, 1000);
+}
+
+function countdown() {
+  if(timeLeft <= 0) {
+    currentStep++;
+    startStep();
+  } else {
+    timeLeft--;
+    updateTimer();
+  }
+}
+
+function updateTimer() {
+  let min = Math.floor(timeLeft/60).toString().padStart(2,'0');
+  let sec = (timeLeft%60).toString().padStart(2,'0');
+  document.getElementById('timer').innerText = `${min}:${sec}`;
+}
+
+function pauseTimer() {
+  if(timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  } else {
+    timerInterval = setInterval(countdown, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  currentStep = 0;
+  startStep();
+}
+</script>
+
+</body>
+</html>
